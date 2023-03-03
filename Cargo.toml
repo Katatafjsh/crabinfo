@@ -1,0 +1,15 @@
+[package]
+name = "crabinfo"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.9"
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.26", features = ["full"] }
+tower = { version = "0.4.13", features = ["timeout"] }
+
+log = "0.4.17"
+env_logger = "0.10.0"
