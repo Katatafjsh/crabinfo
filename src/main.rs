@@ -1,10 +1,12 @@
+use crabinfo::status::routes;
+use tokio::signal;
+use std::net::SocketAddr;
+
 use axum::{
-    routing::get,
     Router,
-    Json,
+    routing::get,
 };
 
-use serde::Serialize;
 use log::info;
 use env_logger::Env;
 
@@ -13,21 +15,50 @@ async fn main() {
     
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
 
-    let app = Router::new()
-    .route("/healthz", get(liveness_probe));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 80));
 
-    info!("Starting service...");
-    axum::Server::bind(&"0.0.0.0:80".parse().unwrap())
+    let app = Router::new()
+    .merge(crabinfo::zpages::routes())
+    .merge(crabinfo::status::routes())
+    .route("/panic", get(panic));
+
+    info!("Listening on {}", addr);
+
+    axum::Server::bind(&addr)
         .serve(app.into_make_service())
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
+
 }
 
-async fn liveness_probe() -> Json<Status> {
-    Json(Status { status: "OK".to_owned() })
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+
+    info!("Signal received, starting graceful shutdown...");
 }
 
-#[derive(Serialize)]
-struct Status {
-    status: String,
+async fn panic() {
+    info!("Panic recieved, exiting...");
+    std::process::exit(255);
 }
