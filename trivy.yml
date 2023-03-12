@@ -1,0 +1,142 @@
+# --- Global Options ---
+
+quiet: false                    # Same as '--quiet'. Default is false
+debug: false                    # Same as '--debug'. Default is false
+insecure: false                 # Same as '--insecure'. Default is false
+timeout: 10m                    # Same as '--timeout'. Default is '5m'
+cache-dir: $HOME/.cache/trivy   # Same as '--cache-dir'. Default is your system cache dir
+
+
+# --- Report Options ---
+
+format: sarif                   # Same as '--format'. Default is 'table'
+report: all                     # Same as '--report' (available with 'trivy k8s'). Default is all
+template:                       # Same as '--template'. Default is empty
+dependency-tree: true           # Same as '--dependency-tree'. Default is false
+list-all-pkgs: true             # Same as '--list-all-pkgs'. Default is false
+ignorefile: .trivyignore        # Same as '--ignorefile'. Default is '.trivyignore'
+ignore-policy:                  # Same as '--ignore-policy'. Default is empty
+exit-code: 0                    # Same as '--exit-code'. Default is 0
+exit-on-eol: 0                  # Same as '--exit-on-eol'. Default is 0
+output: trivy-results.sarif     # Same as '--output'. Default is empty (stdout)
+severity:                       # Same as '--severity'. Default is all severities
+#  - UNKNOWN
+#  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
+
+
+# --- Scan Options ---
+
+scan:
+  file-patterns:                # Same as '--file-patterns'. Default is empty
+    -
+
+  skip-dirs:                    # Same as '--skip-dirs'. Default is empty
+    - usr/local/
+    - etc/
+#    - /lib64
+#    - /lib
+#    - /usr/lib
+#    - /usr/include
+
+#  skip-files:                   # Same as '--skip-files'. Default is empty
+#    - package-dev.json
+
+  offline-scan: false           # Same as '--offline-scan'. Default is false
+
+  security-checks:              # Same as '--security-checks'. Default depends on subcommand
+    - vuln
+    - config
+    - secret
+
+
+# --- Cache Options ---
+
+cache:
+  backend: 'fs'                 # Same as '--cache-backend'. Default is 'fs' 
+  ttl: 0                        # Same as '--cache-ttl'. Default is 0 (no ttl) 
+
+  redis:                        # Redis
+    ca:                         # Same as '--redis-ca'. Default is empty
+    cert:                       # Same as '--redis-cert'. Default is empty
+    key:                        # Same as '--redis-key'. Default is empty
+
+
+# --- DB Options ---
+
+db:
+  skip-update: false                                    # Same as '--skip-db-update'. Default is false
+  no-progress: false                                    # Same as '--no-progress'. Default is false
+  repository: ghcr.io/aquasecurity/trivy-db             # Same as '--db-repository'. Default is 'ghcr.io/aquasecurity/trivy-db'
+  java-repository: ghcr.io/aquasecurity/trivy-java-db   # Same as '--java-db-repository'. Default is 'ghcr.io/aquasecurity/trivy-java-db'
+
+# --- Image Options ---
+
+image:
+  input:                        # Same as '--input' (available with 'trivy image'). Default is empty
+  removed-pkgs: false           # Same as '--removed-pkgs'. Default is false
+
+
+# --- Vulnerability Options ---
+
+vulnerability:
+  ignore-unfixed: true          # Same as '--ignore-unfixed'. Default is false
+  type:                         # Same as '--vuln-type'. Default is 'os,library'
+    - os
+    - library
+
+
+# --- Secret Options ---
+
+secret:
+  config: config/trivy/secret.yaml   # Same as '--secret-config'. Default is 'trivy-secret.yaml'
+
+
+# --- Misconfiguration Options ---
+
+# misconfiguration:
+#   include-non-failures: false   # Same as '--include-non-failures'. Default is false
+#   trace: false                  # Same as '--trace'. Default is false
+# 
+#   policy:                       # Same as '--config-policy'. Default is empty
+#     - policy/repository
+#     - policy/custom
+# 
+#   data:                         # Same as '--config-data'. Default is empty
+#     - data/
+# 
+#   namespaces:                   # Same as '--policy-namespaces'. Default is empty
+#     - opa.examples
+#     - users
+#     
+#   helm:                         # Helm value override configurations
+#     set:                        # Set individual values
+#       - securityContext.runAsUser=10001
+#     values:                     # Set values with file
+#       - overrides.yaml
+#     set-file:                   # Set specific values from specific files
+#       - image=dev-overrides.yaml
+#     set-string:                 # Set as string and preserve type
+#       - name=true
+# 
+#   terraform:                    # Terraform tfvars overrrides
+#     vars:
+#       - dev-terraform.tfvars
+#       - common-terraform.tfvars
+
+
+# --- Kubernetes Options ---
+
+# kubernetes:                     
+#   context:                      # Same as '--context'. Default is empty
+#   namespace:                    # Same as '--namespace'. Default is empty
+
+
+# --- Repository Options ---
+
+repository:                     
+  branch:                       # Same as '--branch'. Default is empty
+  commit:                       # Same as '--commit'. Default is empty
+  tag:                          # Same as '--tag'. Default is empty

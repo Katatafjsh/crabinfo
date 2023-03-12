@@ -13,3 +13,7 @@ tower = { version = "0.4.13", features = ["timeout"] }
 
 log = "0.4.17"
 env_logger = "0.10.0"
+
+jsonwebtoken = "8.2.0"
+chrono = "0.4.23"
+axum-auth = "0.4.0"

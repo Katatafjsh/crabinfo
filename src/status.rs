@@ -14,6 +14,7 @@ pub fn routes() -> Router {
 }
 
 async fn status_code(Path(status_code): Path<u16>) -> Response {
+    // TODO: add control flag
     match StatusCode::from_u16(status_code) {
         Ok(s) => (s, Json(Status { status: s.to_string() })).into_response(),
         _ => StatusCode::BAD_REQUEST.into_response(),
